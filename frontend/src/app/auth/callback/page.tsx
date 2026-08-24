@@ -13,14 +13,40 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        // Read URL params client-side (runs only in the browser, inside useEffect)
+        const params = new URLSearchParams(window.location.search);
 
-        if (sessionError || !session) {
-          setError("Authentication failed. Please try again.");
+        // Supabase may redirect with an error (e.g. user denied consent)
+        const oauthError = params.get("error");
+        if (oauthError) {
+          const desc = params.get("error_description");
+          setError(desc || "Google sign-in was cancelled or failed. Please try again.");
           return;
         }
 
-        const res = await api.post(`/auth/supabase`, {
+        let session;
+
+        const code = params.get("code");
+        if (code) {
+          // PKCE flow (default in @supabase/supabase-js v2):
+          // Exchange the authorization code for a session using the stored PKCE verifier.
+          const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+          if (exchangeError || !data.session) {
+            setError("Authentication failed. Please try again.");
+            return;
+          }
+          session = data.session;
+        } else {
+          // Implicit / already-established session fallback
+          const { data, error: sessionError } = await supabase.auth.getSession();
+          if (sessionError || !data.session) {
+            setError("Authentication failed. Please try again.");
+            return;
+          }
+          session = data.session;
+        }
+
+        const res = await api.post("/auth/supabase", {
           access_token: session.access_token,
         });
 
