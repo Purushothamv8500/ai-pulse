@@ -17,8 +17,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
     && rm -rf /var/lib/apt/lists/*
 
-# Non-root user
-RUN useradd --create-home --shell /bin/sh appuser
+# Non-root user — create user and own the app directory before WORKDIR uses it
+RUN useradd --create-home --shell /bin/sh appuser && \
+    mkdir -p /app && \
+    chown appuser:appuser /app
 
 WORKDIR /app
 
