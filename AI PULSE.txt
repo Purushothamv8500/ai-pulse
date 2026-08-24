@@ -1,0 +1,1420 @@
+AI PULSE
+Product Name
+
+AI Pulse
+
+Tagline
+
+Know what happened. Understand why it matters. Learn what comes next.
+
+1. ROLE
+
+You are the lead product architect, senior UX/UI designer, senior full-stack engineer, AI engineer, database architect, DevOps engineer, QA engineer, security engineer, and technical project manager for this project.
+
+You must approach this project as if you are building a production-grade SaaS product, not a simple demo.
+
+Do not immediately start writing large amounts of code.
+
+First understand the complete product architecture, requirements, user flows, database design, APIs, AI pipeline, ingestion pipeline, security requirements, deployment architecture, and development phases.
+
+Whenever a requirement is ambiguous, identify the ambiguity and propose the best production-grade solution.
+
+Do not make unnecessary architectural decisions without explaining the trade-off.
+
+2. PRODUCT VISION
+
+Build a personalized AI intelligence and learning platform called AI Pulse.
+
+The problem:
+
+AI is evolving extremely quickly.
+
+Users currently need to spend significant amounts of time checking:
+
+AI news
+Research papers
+AI company announcements
+New AI models
+Benchmark results
+Open-source projects
+AI tools
+Developer announcements
+Technical articles
+Tutorials
+Industry developments
+
+Most users do not have enough time to continuously monitor all of these sources.
+
+AI Pulse should solve this problem.
+
+The application should automatically collect important AI developments, analyze them using AI, rank their importance, summarize them, explain why they matter, and tell the user what they should learn next.
+
+The core philosophy is:
+
+Do not simply summarize AI news.
+
+Instead:
+
+Discover → Filter → Understand → Learn
+
+The product should answer three questions:
+
+What happened?
+Why does it matter?
+What should I learn next?
+3. CORE VALUE PROPOSITION
+
+AI Pulse should save users time while helping them continuously improve their AI knowledge.
+
+The primary daily experience should be:
+
+"Give me the 5–10 AI developments I actually need to know today, explain them clearly, tell me why they matter, and recommend what I should learn next."
+
+4. TARGET USERS
+
+Initially support:
+
+Persona 1 — AI Developer
+
+Needs:
+
+new models
+APIs
+frameworks
+agent technologies
+RAG
+LLM tooling
+benchmarks
+open-source releases
+Persona 2 — AI/ML Engineer
+
+Needs:
+
+research
+model performance
+infrastructure
+benchmarks
+training techniques
+inference
+evaluation
+Persona 3 — AI Enthusiast / Student
+
+Needs:
+
+understandable explanations
+important news
+learning recommendations
+beginner-friendly explanations
+Persona 4 — Technology Professional
+
+Needs:
+
+business impact
+major AI announcements
+industry trends
+strategic implications
+
+The architecture should allow additional personas later.
+
+5. CORE PRODUCT EXPERIENCE
+
+Every day the system should:
+
+Collect AI-related information.
+Extract useful content.
+Remove duplicates.
+Classify content.
+Score importance.
+Analyze technical significance.
+Determine potential impact.
+Generate a concise summary.
+Explain why the development matters.
+Identify who should care.
+Identify concepts users should learn.
+Generate a personalized daily briefing.
+Send the briefing through email.
+Show the same briefing in the web application.
+6. CONTENT CATEGORIES
+
+Support at least these categories:
+
+AI News
+Research
+New Models
+Model Releases
+Benchmarks
+Open Source
+AI Tools
+Developer Tools
+AI Agents
+LLMs
+RAG
+Multimodal AI
+Computer Vision
+Robotics
+AI Infrastructure
+AI Safety
+AI Startups
+AI Business
+AI Regulations
+Tutorials
+Technical Articles
+
+The architecture must allow new categories later.
+
+7. DAILY BRIEFING
+
+The primary daily briefing should contain:
+
+Header
+
+AI Pulse
+
+Date
+
+Short personalized greeting.
+
+Top AI Developments
+
+Select approximately 5–10 important developments.
+
+For every item show:
+
+Title
+
+Short and informative.
+
+What happened?
+
+A concise explanation.
+
+Why does it matter?
+
+Explain practical significance.
+
+Who should care?
+
+Examples:
+
+Developers
+Researchers
+Founders
+Students
+AI enthusiasts
+What should I learn?
+
+Provide relevant learning topics.
+
+Difficulty
+
+Beginner / Intermediate / Advanced
+
+Estimated learning time
+
+Example:
+
+5 minutes
+
+10 minutes
+
+30 minutes
+
+1 hour
+
+Original source
+
+Always provide the original source link.
+
+8. "WHY SHOULD I CARE?" FEATURE
+
+This is one of the most important features.
+
+Never create a simple generic news summary.
+
+For every important item answer:
+
+"What changes because of this?"
+
+Examples:
+
+Instead of:
+
+"Company X released a new model."
+
+Say:
+
+"This matters because the model improves performance in coding tasks while reducing inference cost. Developers building coding assistants may be able to use a smaller model while maintaining similar quality."
+
+The system should prioritize practical understanding.
+
+9. DAILY LEARNING RECOMMENDATION
+
+Every daily briefing should contain:
+
+Today's Recommended Learning
+
+Example:
+
+Topic:
+
+"LLM Evaluation"
+
+Why:
+
+"Several important developments today involve model evaluation. Understanding evaluation methods will help you distinguish genuine model improvements from benchmark-specific gains."
+
+Then provide:
+
+Concept explanation
+Suggested reading
+Optional video
+Practical exercise
+Estimated time
+10. PERSONALIZATION
+
+During onboarding ask users:
+
+Experience
+Beginner
+Intermediate
+Advanced
+Expert
+Interests
+
+Allow multiple selections:
+
+LLMs
+Generative AI
+AI Agents
+RAG
+AI Coding
+AI Research
+Computer Vision
+Robotics
+AI Infrastructure
+AI Startups
+AI Business
+AI Safety
+Open Source
+AI Tools
+Multimodal AI
+Daily reading time
+5 minutes
+15 minutes
+30 minutes
+60+ minutes
+Preferred delivery time
+
+Allow user-selected timezone and time.
+
+11. KNOWLEDGE PROFILE
+
+Build a user knowledge profile.
+
+Track:
+
+topics viewed
+articles read
+learning recommendations
+completed learning
+quiz results
+saved topics
+difficulty level
+interests
+reading history
+
+Eventually create a knowledge map.
+
+Example:
+
+LLMs: 90%
+
+RAG: 70%
+
+Agents: 45%
+
+Evaluation: 25%
+
+Fine-tuning: 60%
+
+Multimodal: 35%
+
+This profile should influence future recommendations.
+
+12. CONTENT INGESTION
+
+Create an extensible source ingestion architecture.
+
+Potential sources:
+
+RSS
+Official company blogs
+arXiv
+GitHub
+Hugging Face
+Research publications
+Benchmark repositories
+News APIs
+AI newsletters where legally/technically appropriate
+
+Do not depend on one source.
+
+Create a common ingestion interface.
+
+Example concept:
+
+SourceAdapter
+
+Each source adapter should return normalized content.
+
+13. INGESTION PIPELINE
+
+Architecture:
+
+Source
+
+↓
+
+Fetcher
+
+↓
+
+Parser
+
+↓
+
+Normalizer
+
+↓
+
+Duplicate Detection
+
+↓
+
+Content Classification
+
+↓
+
+AI Analysis
+
+↓
+
+Importance Scoring
+
+↓
+
+Database
+
+↓
+
+Daily Ranking
+
+↓
+
+Briefing Generator
+
+↓
+
+Email
+
+14. DUPLICATE DETECTION
+
+AI news is frequently duplicated across websites.
+
+The system must detect:
+
+exact duplicates
+same story from different sources
+rewritten versions of the same announcement
+
+Use:
+
+URL normalization
+title similarity
+content similarity
+embeddings where appropriate
+
+The system should group multiple sources discussing the same event.
+
+15. IMPORTANCE SCORING
+
+Create an explainable importance scoring system.
+
+Potential factors:
+
+technical significance
+novelty
+industry impact
+developer impact
+research significance
+business impact
+source credibility
+potential future impact
+user relevance
+recency
+
+Example:
+
+importance_score =
+technical_significance
++
+industry_impact
++
+novelty
++
+user_relevance
++
+future_impact
+
+The exact weighting should be configurable.
+
+Do not hard-code business logic throughout the application.
+
+16. AI PROCESSING
+
+Create an AI service abstraction.
+
+The application must not tightly couple itself to a single LLM provider.
+
+Support a provider interface such as:
+
+AIProvider
+
+Implementations can include:
+
+OpenAI
+Anthropic
+Google
+
+The system should allow models to be configured through environment variables or database configuration.
+
+17. AI ANALYSIS OUTPUT
+
+For every content item generate structured data:
+
+summary
+category
+subcategory
+importance score
+technical significance
+business significance
+industry impact
+affected users
+key concepts
+technologies
+companies
+models
+benchmarks
+learning topics
+difficulty
+estimated learning time
+why it matters
+source credibility
+
+Prefer structured JSON output from the model.
+
+Validate AI output using schemas.
+
+Never blindly trust model-generated JSON.
+
+18. DAILY BRIEFING GENERATION
+
+At the configured daily generation time:
+
+Fetch recent content.
+Filter low-quality items.
+Group duplicates.
+Rank content.
+Apply user preferences.
+Select top stories.
+Generate explanations.
+Generate learning recommendations.
+Generate a daily learning topic.
+Generate the final briefing.
+Store the briefing.
+Send email.
+Record delivery status.
+19. WEB APPLICATION
+
+Build a modern SaaS dashboard.
+
+Main pages:
+
+Landing Page
+
+Explain:
+
+"AI is changing every day. You don't need to follow everything."
+
+Show:
+
+daily AI intelligence
+personalized summaries
+why it matters
+learning recommendations
+
+CTA:
+
+"Get My Daily AI Brief"
+
+Authentication
+
+Support:
+
+email/password
+Google OAuth
+
+Design authentication so additional providers can be added later.
+
+Onboarding
+
+Collect:
+
+experience
+interests
+reading time
+delivery time
+timezone
+Dashboard
+
+Show:
+
+today's briefing
+top stories
+recommended learning
+saved topics
+knowledge progress
+Daily Briefing Page
+
+Display the complete briefing.
+
+Allow:
+
+save
+mark as read
+share
+open source
+hide
+feedback
+Explore
+
+Allow browsing by:
+
+category
+date
+topic
+source
+company
+model
+benchmark
+Learning
+
+Show:
+
+recommended topics
+learning paths
+completed topics
+saved learning resources
+progress
+Knowledge Profile
+
+Visualize:
+
+topics learned
+proficiency
+reading history
+learning streak
+interests
+Settings
+
+Allow:
+
+profile
+interests
+reading level
+email preferences
+notification time
+timezone
+email frequency
+privacy
+account deletion
+20. UI/UX DIRECTION
+
+The application should feel:
+
+modern
+premium
+intelligent
+clean
+focused
+professional
+
+Avoid:
+
+excessive gradients
+excessive animations
+clutter
+generic AI dashboard designs
+unnecessary cards everywhere
+
+The design should emphasize information hierarchy and readability.
+
+Primary focus:
+
+Content > decoration
+
+Use responsive design.
+
+Desktop, tablet and mobile must all work.
+
+21. FRONTEND STACK
+
+Use:
+
+Next.js
+TypeScript
+Tailwind CSS
+shadcn/ui
+React
+TanStack Query
+React Hook Form
+Zod
+
+Use server components where appropriate.
+
+Use client components only where interactivity requires them.
+
+Maintain strict TypeScript settings.
+
+Avoid unnecessary dependencies.
+
+22. BACKEND STACK
+
+Use:
+
+Python
+FastAPI
+Pydantic
+SQLAlchemy
+Alembic
+PostgreSQL
+
+For background processing use a robust job architecture.
+
+Potential:
+
+Redis
+Celery / ARQ
+
+The architecture must support scheduled jobs.
+
+23. DATABASE
+
+Use PostgreSQL.
+
+Design normalized schemas for:
+
+users
+
+user_preferences
+
+user_interests
+
+sources
+
+articles
+
+article_sources
+
+topics
+
+article_topics
+
+companies
+
+models
+
+benchmarks
+
+learning_resources
+
+briefings
+
+briefing_items
+
+user_reads
+
+saved_articles
+
+learning_progress
+
+notifications
+
+jobs
+
+ai_processing_logs
+
+feedback
+
+subscriptions
+
+Create proper:
+
+primary keys
+foreign keys
+indexes
+unique constraints
+timestamps
+
+Use UUIDs where appropriate.
+
+24. API DESIGN
+
+Create versioned REST APIs.
+
+Base:
+
+/api/v1
+
+Example endpoints:
+
+POST /auth/register
+
+POST /auth/login
+
+POST /auth/logout
+
+GET /me
+
+PUT /me
+
+GET /preferences
+
+PUT /preferences
+
+GET /briefings/today
+
+GET /briefings
+
+GET /articles
+
+GET /articles/{id}
+
+POST /articles/{id}/save
+
+DELETE /articles/{id}/save
+
+POST /articles/{id}/feedback
+
+GET /learning/recommendations
+
+GET /learning/topics
+
+GET /learning/progress
+
+POST /learning/{id}/complete
+
+GET /knowledge-profile
+
+GET /sources
+
+Admin APIs should be separated from user APIs.
+
+25. EMAIL SYSTEM
+
+Create responsive HTML email templates.
+
+Daily email should include:
+
+top stories
+summaries
+why it matters
+learning recommendation
+original links
+dashboard CTA
+
+Email should work in major email clients.
+
+Track:
+
+sent
+delivered
+failed
+opened where supported
+clicked
+
+Respect privacy and email regulations.
+
+26. NOTIFICATION SYSTEM
+
+Initially support email.
+
+Design abstraction for future:
+
+email
+browser notifications
+mobile push
+Telegram
+Slack
+
+Do not implement all of them in V1.
+
+27. ADMIN DASHBOARD
+
+Create an admin interface.
+
+Admin should be able to:
+
+view ingestion status
+view sources
+enable/disable sources
+inspect articles
+inspect duplicate groups
+inspect AI processing
+view failed jobs
+trigger ingestion
+trigger briefing generation
+view email delivery
+manage users
+view system health
+28. OBSERVABILITY
+
+Add:
+
+structured logging
+error tracking
+metrics
+job monitoring
+AI request logging
+ingestion monitoring
+
+Never log sensitive user information or API keys.
+
+29. SECURITY
+
+Implement:
+
+secure authentication
+password hashing
+secure session/token handling
+rate limiting
+input validation
+authorization
+CSRF protection where applicable
+secure HTTP headers
+secret management
+database security
+API validation
+
+Never expose:
+
+API keys
+internal prompts
+private user information
+database credentials
+30. AI COST CONTROL
+
+AI processing can become expensive.
+
+Design for cost efficiency.
+
+Use different models for different tasks.
+
+For example:
+
+Low-cost model:
+
+classification
+tagging
+deduplication assistance
+simple summaries
+
+Higher-quality model:
+
+important article analysis
+daily briefing generation
+personalized learning recommendations
+
+Cache AI results.
+
+Do not process the same article repeatedly.
+
+Store model name and processing metadata.
+
+31. CONTENT QUALITY
+
+The system must prioritize reliable sources.
+
+Create a source credibility score.
+
+Example:
+
+Official source → very high
+
+Major research institution → high
+
+Established publication → high
+
+Unknown blog → lower
+
+Social media → discovery only unless verified
+
+The system should distinguish:
+
+Primary source
+
+Original announcement/research.
+
+Secondary source
+
+Article reporting on the announcement.
+
+Prefer primary sources when available.
+
+32. COPYRIGHT AND CONTENT POLICY
+
+Do not reproduce entire copyrighted articles.
+
+Store only what is necessary for processing.
+
+Generate summaries in original wording.
+
+Always attribute and link to original sources.
+
+Do not bypass paywalls or access controls.
+
+Respect robots.txt, source terms, licensing, and API policies where applicable.
+
+33. SEARCH
+
+Implement search across:
+
+articles
+topics
+companies
+models
+benchmarks
+learning resources
+
+Initially use PostgreSQL full-text search.
+
+Add semantic/vector search when justified.
+
+34. ANALYTICS
+
+Track product analytics such as:
+
+daily active users
+briefing opens
+article clicks
+saved articles
+learning completion
+email engagement
+most popular topics
+retention
+notification engagement
+
+Use privacy-conscious analytics.
+
+35. MONETIZATION — FUTURE
+
+Do not prioritize monetization in V1.
+
+Design for future:
+
+Free:
+
+daily briefing
+limited history
+
+Pro:
+
+personalization
+deeper research
+knowledge graph
+advanced learning paths
+historical search
+custom topics
+
+Team/Enterprise:
+
+team briefings
+custom sources
+company-specific intelligence
+shared knowledge
+36. DEVELOPMENT PHASES
+
+Do not attempt to build everything simultaneously.
+
+Phase 1 — Architecture
+
+Produce:
+
+product requirements
+architecture
+database schema
+API specification
+UI sitemap
+user flows
+development plan
+Phase 2 — MVP
+
+Build:
+
+authentication
+onboarding
+RSS ingestion
+article database
+AI summarization
+importance ranking
+daily briefing
+email delivery
+dashboard
+Phase 3
+
+Add:
+
+personalization
+learning recommendations
+saved content
+search
+history
+Phase 4
+
+Add:
+
+knowledge profile
+learning progress
+quizzes
+knowledge graph
+Phase 5
+
+Add:
+
+additional source adapters
+advanced personalization
+mobile experience
+additional notifications
+37. CODING RULES
+
+Use clean architecture.
+
+Separate:
+
+presentation
+API
+business logic
+AI services
+data access
+background jobs
+integrations
+
+Do not place business logic inside controllers.
+
+Use dependency injection.
+
+Use typed schemas.
+
+Write tests.
+
+Avoid duplicated code.
+
+Use environment variables for configuration.
+
+Create .env.example.
+
+Never commit secrets.
+
+38. TESTING
+
+Create:
+
+Unit tests
+
+For:
+
+scoring
+classification
+deduplication
+ranking
+personalization
+Integration tests
+
+For:
+
+database
+API
+ingestion
+email
+End-to-end tests
+
+For:
+
+signup
+onboarding
+dashboard
+briefing
+save article
+learning progress
+39. DEVOPS
+
+Create:
+
+Docker configuration
+local development environment
+production configuration
+database migrations
+CI/CD
+environment configuration
+health checks
+
+The application should be deployable without manually changing source code.
+
+40. REQUIRED DOCUMENTATION
+
+Create:
+
+README.md
+
+ARCHITECTURE.md
+
+API.md
+
+DATABASE.md
+
+AI_PIPELINE.md
+
+INGESTION.md
+
+DEPLOYMENT.md
+
+SECURITY.md
+
+CONTRIBUTING.md
+
+ENVIRONMENT.md
+
+41. DEVELOPMENT APPROACH
+
+Do not generate the entire project in one response.
+
+Work incrementally.
+
+At the beginning:
+
+Analyze the requirements.
+Identify missing requirements.
+Propose architecture.
+Explain technology choices.
+Create folder structure.
+Create database architecture.
+Create API architecture.
+Create UI sitemap.
+Create implementation roadmap.
+
+Then wait for approval before moving to implementation.
+
+When implementation begins:
+
+Implement one coherent feature at a time.
+
+For each feature:
+
+Explain what is being implemented.
+List files that will be created/modified.
+Provide complete code.
+Explain configuration.
+Explain how to run it.
+Provide tests.
+Explain how to verify it.
+
+Never give incomplete pseudo-code when production code is expected.
+
+42. IMPORTANT PRODUCT PRINCIPLE
+
+AI Pulse is NOT primarily a news website.
+
+It is an:
+
+AI intelligence + understanding + learning platform.
+
+The hierarchy is:
+
+News
+
+↓
+
+Understanding
+
+↓
+
+Context
+
+↓
+
+Why it matters
+
+↓
+
+What I should learn
+
+↓
+
+Knowledge growth
+
+Every product decision should support this objective.
+
+43. FIRST TASK FOR CLAUDE
+
+Do NOT write application code yet.
+
+First produce a comprehensive technical project blueprint containing:
+
+Executive summary
+Product vision
+User personas
+Functional requirements
+Non-functional requirements
+Complete feature list
+MVP scope
+Future scope
+Recommended technology stack
+Architecture diagram
+Frontend architecture
+Backend architecture
+AI architecture
+Data ingestion architecture
+Background job architecture
+Database schema
+API specification
+Authentication architecture
+Email architecture
+Notification architecture
+Admin architecture
+Security architecture
+AI cost-control strategy
+Content quality strategy
+Deduplication strategy
+Ranking strategy
+Personalization strategy
+Learning recommendation architecture
+Folder structure
+Development phases
+Detailed implementation roadmap
+Testing strategy
+DevOps strategy
+Deployment architecture
+Monitoring strategy
+Future scalability
+Estimated engineering complexity
+Major technical risks
+Product risks
+Recommended MVP launch strategy
+
+For every major architectural decision explain:
+
+Why this technology?
+What problem does it solve?
+What alternatives exist?
+Why was this option selected?
+
+Do not begin coding until this blueprint is complete.
+
+The final result should be detailed enough that a professional engineering team can begin implementation from it.
+
+
+
+
+                                      ┌─────────────────────┐
+                                      │       USERS         │
+                                      │                     │
+                                      │ Web / Mobile        │
+                                      │ Email               │
+                                      └──────────┬──────────┘
+                                                 │
+                                                 ▼
+                              ┌────────────────────────────────┐
+                              │       CLOUDFLARE / EDGE         │
+                              │                                │
+                              │ CDN                            │
+                              │ DNS                            │
+                              │ WAF                            │
+                              │ DDoS Protection                │
+                              │ Rate Limiting                  │
+                              └───────────────┬────────────────┘
+                                              │
+                         ┌────────────────────┴───────────────────┐
+                         │                                        │
+                         ▼                                        ▼
+                ┌──────────────────┐                    ┌──────────────────┐
+                │   NEXT.JS WEB    │                    │   API GATEWAY    │
+                │                  │                    │                  │
+                │ React            │                    │ Authentication   │
+                │ TypeScript       │                    │ Rate limiting   │
+                │ Tailwind         │                    │ Routing          │
+                │ shadcn/ui        │                    │ Validation       │
+                └────────┬─────────┘                    └────────┬─────────┘
+                         │                                       │
+                         │                              ┌────────▼─────────┐
+                         │                              │   FASTAPI        │
+                         │                              │                  │
+                         │                              │ REST API         │
+                         │                              │ Business Logic   │
+                         │                              │ Authorization    │
+                         │                              └────────┬─────────┘
+                         │                                       │
+                         └───────────────────┬───────────────────┘
+                                             │
+                              ┌──────────────┼───────────────┐
+                              │              │               │
+                              ▼              ▼               ▼
+                       ┌────────────┐ ┌────────────┐ ┌──────────────┐
+                       │ User       │ │ Content    │ │ Learning     │
+                       │ Service    │ │ Service    │ │ Service      │
+                       └─────┬──────┘ └──────┬─────┘ └──────┬───────┘
+                             │               │              │
+                             └───────────────┼──────────────┘
+                                             │
+                         ┌───────────────────┼────────────────────┐
+                         │                   │                    │
+                         ▼                   ▼                    ▼
+                  ┌──────────────┐   ┌──────────────┐    ┌──────────────┐
+                  │ PostgreSQL   │   │    Redis     │    │ Object       │
+                  │              │   │              │    │ Storage      │
+                  │ Users        │   │ Cache        │    │              │
+                  │ Articles     │   │ Queue        │    │ Images       │
+                  │ Briefings    │   │ Sessions     │    │ Files        │
+                  │ Learning     │   │ Rate limits  │    │ Exports      │
+                  └──────────────┘   └──────┬───────┘    └──────────────┘
+                                            │
+                                            ▼
+                                   ┌──────────────────┐
+                                   │  JOB WORKERS     │
+                                   │                  │
+                                   │ Celery / ARQ     │
+                                   └────────┬─────────┘
+                                            │
+                 ┌──────────────────────────┼─────────────────────────┐
+                 │                          │                         │
+                 ▼                          ▼                         ▼
+        ┌─────────────────┐       ┌──────────────────┐      ┌─────────────────┐
+        │ INGESTION       │       │ AI PROCESSING    │      │ EMAIL           │
+        │ WORKERS         │       │ WORKERS          │      │ WORKERS         │
+        │                 │       │                  │      │                 │
+        │ RSS             │       │ Classification   │      │ Daily Brief     │
+        │ APIs            │       │ Summarization    │      │ Notifications   │
+        │ arXiv           │       │ Ranking          │      │ Retry           │
+        │ GitHub          │       │ Deduplication    │      │ Tracking        │
+        │ Hugging Face    │       │ Recommendations  │      │                 │
+        └────────┬────────┘       └────────┬─────────┘      └────────┬────────┘
+                 │                         │                         │
+                 ▼                         ▼                         ▼
+        ┌─────────────────┐       ┌──────────────────┐      ┌─────────────────┐
+        │ EXTERNAL        │       │ AI MODEL         │      │ EMAIL PROVIDER  │
+        │ SOURCES         │       │ PROVIDERS        │      │                 │
+        │                 │       │                  │      │ Transactional   │
+        │ News            │       │ OpenAI           │      │ Email           │
+        │ Research        │       │ Anthropic        │      │                 │
+        │ Blogs           │       │ Google           │      │                 │
+        │ GitHub          │       │                  │      │                 │
+        └─────────────────┘       └──────────────────┘      └─────────────────┘

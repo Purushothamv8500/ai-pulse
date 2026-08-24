@@ -1,0 +1,155 @@
+# Render Blueprint — AI Pulse
+# https://render.com/docs/blueprint-spec
+#
+# SETUP:
+#  1. Push this repo to GitHub
+#  2. In Render Dashboard → New → Blueprint → connect this repo
+#  3. Set all "sync: false" env vars in the Render dashboard BEFORE first deploy
+#
+# SECRETS — set in Render dashboard (never commit values here):
+#  SECRET_KEY, DATABASE_URL, DATABASE_SYNC_URL, ANTHROPIC_API_KEY,
+#  SMTP_PASSWORD, GOOGLE_CLIENT_SECRET, SUPABASE_SERVICE_ROLE_KEY
+
+services:
+  # ── API ─────────────────────────────────────────────────────────────────────
+  - type: web
+    name: ai-pulse-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: starter
+    region: oregon
+    branch: main
+    healthCheckPath: /health
+    numInstances: 1
+    autoDeploy: false  # managed by GitHub Actions CI/CD
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DEBUG
+        value: "false"
+      - key: ENABLE_SCHEDULER
+        value: "false"
+      - key: WEB_CONCURRENCY
+        value: "1"
+      - key: SECRET_KEY
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_SYNC_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: AI_PROVIDER
+        value: anthropic
+      - key: AI_MODEL_CHEAP
+        value: claude-haiku-4-5-20251001
+      - key: AI_MODEL_QUALITY
+        value: claude-sonnet-4-6
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USERNAME
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: SMTP_FROM_EMAIL
+        sync: false
+      - key: SMTP_FROM_NAME
+        value: "AI Pulse"
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_PUBLISHABLE_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "60"
+      - key: REFRESH_TOKEN_EXPIRE_DAYS
+        value: "30"
+      - key: INGESTION_INTERVAL_HOURS
+        value: "6"
+      - key: BRIEFING_GENERATION_HOUR
+        value: "7"
+      - key: BRIEFING_GENERATION_MINUTE
+        value: "0"
+      - key: RATE_LIMIT_PER_MINUTE
+        value: "60"
+
+  # ── Scheduler (Background Worker) ───────────────────────────────────────────
+  - type: worker
+    name: ai-pulse-scheduler
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: starter
+    region: oregon
+    branch: main
+    autoDeploy: false  # managed by GitHub Actions CI/CD
+    startCommand: python -m app.workers.scheduler_runner
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DEBUG
+        value: "false"
+      - key: ENABLE_SCHEDULER
+        value: "true"
+      - key: SECRET_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_SYNC_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: AI_PROVIDER
+        value: anthropic
+      - key: AI_MODEL_CHEAP
+        value: claude-haiku-4-5-20251001
+      - key: AI_MODEL_QUALITY
+        value: claude-sonnet-4-6
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USERNAME
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: SMTP_FROM_EMAIL
+        sync: false
+      - key: SMTP_FROM_NAME
+        value: "AI Pulse"
+      - key: FRONTEND_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_PUBLISHABLE_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: INGESTION_INTERVAL_HOURS
+        value: "6"
+      - key: BRIEFING_GENERATION_HOUR
+        value: "7"
+      - key: BRIEFING_GENERATION_MINUTE
+        value: "0"

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Pulse — Daily Briefing</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <div style="max-width:600px;margin:0 auto;padding:20px;">
+    <!-- Header -->
+    <div style="background:#6366f1;border-radius:16px 16px 0 0;padding:32px 32px 24px;margin-bottom:0;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+        <div style="width:40px;height:40px;background:rgba(255,255,255,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+          <span style="color:white;font-weight:bold;font-size:14px;">AI</span>
+        </div>
+        <span style="color:white;font-weight:bold;font-size:20px;">AI Pulse</span>
+      </div>
+      <p style="color:#c7d2fe;margin:0 0 4px;font-size:13px;">{{ briefing.date.strftime('%A, %B %d, %Y') }}</p>
+      <h1 style="color:white;margin:0;font-size:22px;font-weight:700;">Good morning, {{ user_name.split(' ')[0] }}.</h1>
+    </div>
+
+    <!-- Greeting -->
+    <div style="background:#eef2ff;padding:16px 32px;border-left:4px solid #6366f1;margin-bottom:0;">
+      <p style="margin:0;color:#4338ca;font-size:14px;">{{ briefing.greeting or "Here are today's most important AI developments." }}</p>
+    </div>
+
+    <!-- Main Content -->
+    <div style="background:white;padding:32px;border-radius:0 0 16px 16px;border:1px solid #e5e7eb;border-top:none;">
+      <h2 style="color:#111827;font-size:18px;font-weight:700;margin:0 0 20px;padding-bottom:12px;border-bottom:2px solid #f3f4f6;">
+        Today's Top AI Developments
+      </h2>
+
+      {% for item in briefing.items %}
+      <div style="margin-bottom:28px;padding-bottom:28px;{% if not loop.last %}border-bottom:1px solid #f3f4f6;{% endif %}">
+        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+          {% if item.article.category %}
+          <span style="background:#eef2ff;color:#4338ca;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;">{{ item.article.category }}</span>
+          {% endif %}
+          {% if item.difficulty %}
+          <span style="background:#f0fdf4;color:#16a34a;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;">{{ item.difficulty }}</span>
+          {% endif %}
+        </div>
+
+        <h3 style="margin:0 0 10px;font-size:17px;font-weight:600;color:#111827;line-height:1.4;">
+          {{ item.position }}. {{ item.article.title }}
+        </h3>
+
+        {% if item.summary %}
+        <div style="margin-bottom:12px;">
+          <p style="margin:0 0 4px;font-size:11px;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:0.05em;">What happened</p>
+          <p style="margin:0;color:#374151;font-size:14px;line-height:1.6;">{{ item.summary }}</p>
+        </div>
+        {% endif %}
+
+        {% if item.why_it_matters %}
+        <div style="background:#fffbeb;border-left:4px solid #f59e0b;padding:12px 16px;border-radius:4px;margin-bottom:12px;">
+          <p style="margin:0 0 4px;font-size:11px;font-weight:600;color:#b45309;text-transform:uppercase;letter-spacing:0.05em;">Why it matters</p>
+          <p style="margin:0;color:#374151;font-size:14px;line-height:1.6;">{{ item.why_it_matters }}</p>
+        </div>
+        {% endif %}
+
+        <a href="{{ item.article.url }}" style="color:#6366f1;font-size:13px;font-weight:500;text-decoration:none;">
+          Read original source →
+        </a>
+      </div>
+      {% endfor %}
+
+      <!-- Learning Section -->
+      {% if briefing.learning_topic %}
+      <div style="background:#f0fdf4;border-radius:12px;padding:24px;margin-top:8px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+          <span style="font-size:18px;">📚</span>
+          <h3 style="margin:0;font-size:16px;font-weight:700;color:#111827;">Today's Recommended Learning</h3>
+        </div>
+        <p style="margin:0 0 8px;font-size:18px;font-weight:600;color:#111827;">{{ briefing.learning_topic }}</p>
+        {% if briefing.learning_why %}
+        <p style="margin:0 0 12px;font-size:14px;color:#374151;line-height:1.6;">{{ briefing.learning_why }}</p>
+        {% endif %}
+        {% if briefing.learning_explanation %}
+        <p style="margin:0;font-size:13px;color:#6b7280;line-height:1.6;">{{ briefing.learning_explanation }}</p>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <!-- CTA -->
+      <div style="text-align:center;margin-top:32px;padding-top:24px;border-top:1px solid #f3f4f6;">
+        <a href="{{ frontend_url }}/dashboard" style="display:inline-block;background:#6366f1;color:white;padding:14px 28px;border-radius:10px;text-decoration:none;font-weight:600;font-size:15px;">
+          View full briefing →
+        </a>
+        <p style="margin:16px 0 0;font-size:12px;color:#9ca3af;">
+          You're receiving this because you're an AI Pulse subscriber.<br>
+          <a href="{{ frontend_url }}/settings" style="color:#6366f1;">Manage preferences</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

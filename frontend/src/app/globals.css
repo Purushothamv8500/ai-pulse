@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Editorial Design System — AI Pulse */
+    --background: 40 15% 97%;        /* warm off-white #F8F7F4 */
+    --foreground: 25 10% 7%;         /* near-black #121110 */
+    --card: 0 0% 100%;               /* pure white */
+    --card-foreground: 25 10% 7%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 25 10% 7%;
+    --primary: 226 100% 54%;         /* cobalt #1649FF */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 40 10% 95%;
+    --secondary-foreground: 25 10% 20%;
+    --muted: 40 10% 93%;
+    --muted-foreground: 25 5% 45%;
+    --accent: 226 100% 96%;          /* cobalt-50 */
+    --accent-foreground: 226 100% 35%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 35 12% 88%;            /* warm border */
+    --input: 35 12% 88%;
+    --ring: 226 100% 54%;
+    --radius: 0.5rem;
+
+    /* Editorial tokens */
+    --paper: #F8F7F4;
+    --surface: #FFFFFF;
+    --surface-muted: #F2F1EE;
+    --text-primary: #111110;
+    --text-secondary: #57534E;
+    --text-tertiary: #A8A29E;
+    --border-color: #E7E5E0;
+    --border-strong: #C9C5BE;
+    --cobalt: #1649FF;
+    --cobalt-light: #EFF3FF;
+    --signal-high-text: #78350F;
+    --signal-high-bg: #FFFBEB;
+    --signal-high-border: #FDE68A;
+    --signal-critical-text: #7F1D1D;
+    --signal-critical-bg: #FEF2F2;
+    --signal-critical-border: #FECACA;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  body {
+    @apply antialiased;
+    background-color: var(--paper);
+    color: var(--text-primary);
+    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  .editorial-title {
+    font-feature-settings: "kern" 1, "liga" 1;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+  }
+  .section-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .divider {
+    border-top: 1px solid var(--border-color);
+  }
+  .prose-editorial p {
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+}

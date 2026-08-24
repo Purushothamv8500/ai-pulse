@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+*.db
+*.log
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.venv/
+venv/
+.idea/
+.vscode/
+tests/
+backend.log
+backend_err.log
