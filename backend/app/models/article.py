@@ -1,8 +1,16 @@
+from __future__ import annotations
+
 import uuid
-from sqlalchemy import String, Boolean, Float, Text, Integer, ForeignKey, DateTime, JSON
+from typing import TYPE_CHECKING
+from sqlalchemy import String, Boolean, Float, Text, ForeignKey, DateTime, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.database import Base
 from app.models.user import UUIDType
+
+if TYPE_CHECKING:
+    from app.models.source import Source
+    from app.models.briefing import BriefingItem
+    from app.models.user import User
 from datetime import datetime
 
 

@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy import func, event
+from sqlalchemy import func
 from datetime import datetime
 from typing import AsyncGenerator
 from app.core.config import settings

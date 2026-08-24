@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc
 from datetime import datetime, timezone
 from app.core.database import get_db
 from app.api.deps import get_current_user
 from app.models.user import User
-from app.models.learning import LearningTopic, LearningResource, LearningProgress
+from app.models.learning import LearningTopic, LearningProgress
 
 router = APIRouter(prefix="/learning", tags=["learning"])
 
@@ -16,7 +16,7 @@ async def list_topics(
     user: User = Depends(get_current_user),
 ):
     result = await db.execute(
-        select(LearningTopic).where(LearningTopic.is_active == True).order_by(LearningTopic.title)
+        select(LearningTopic).where(LearningTopic.is_active).order_by(LearningTopic.title)
     )
     return list(result.scalars().all())
 

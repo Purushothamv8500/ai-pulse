@@ -1,5 +1,5 @@
 import structlog
-from datetime import date, datetime, timezone
+from datetime import date
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc
 from app.models.article import Article
@@ -86,8 +86,8 @@ class BriefingService:
         result = await db.execute(
             select(Article)
             .where(
-                Article.is_processed == True,
-                Article.is_hidden == False,
+                Article.is_processed,
+                ~Article.is_hidden,
                 Article.importance_score > 0.3,
             )
             .order_by(desc(Article.importance_score), desc(Article.created_at))

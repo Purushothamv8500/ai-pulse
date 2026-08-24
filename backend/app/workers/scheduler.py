@@ -45,7 +45,7 @@ async def _send_briefing_emails(db, briefing):
     from sqlalchemy import select
 
     result = await db.execute(
-        select(User).where(User.is_active == True, User.onboarding_complete == True)
+        select(User).where(User.is_active, User.onboarding_complete)
     )
     users = result.scalars().all()
 

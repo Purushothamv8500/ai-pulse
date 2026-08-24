@@ -5,7 +5,7 @@ from app.core.database import get_db
 from app.api.deps import get_current_user
 from app.models.user import User
 from app.models.article import Article, SavedArticle
-from app.schemas.article import ArticleResponse, ArticleListResponse, ArticleFeedbackRequest
+from app.schemas.article import ArticleResponse, ArticleListResponse
 
 router = APIRouter(prefix="/articles", tags=["articles"])
 
@@ -19,7 +19,7 @@ async def list_articles(
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
-    query = select(Article).where(Article.is_processed == True, Article.is_hidden == False)
+    query = select(Article).where(Article.is_processed, ~Article.is_hidden)
 
     if category:
         query = query.where(Article.category == category)

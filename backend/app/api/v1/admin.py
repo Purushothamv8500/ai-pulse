@@ -31,7 +31,7 @@ async def get_stats(
 ):
     users_count = await db.scalar(select(func.count(User.id)))
     articles_count = await db.scalar(select(func.count(Article.id)))
-    processed_count = await db.scalar(select(func.count(Article.id)).where(Article.is_processed == True))
+    processed_count = await db.scalar(select(func.count(Article.id)).where(Article.is_processed))
     briefings_count = await db.scalar(select(func.count(Briefing.id)))
     sources_count = await db.scalar(select(func.count(Source.id)))
 

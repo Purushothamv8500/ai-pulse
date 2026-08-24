@@ -1,8 +1,6 @@
 import feedparser
 import httpx
-import hashlib
 from datetime import datetime
-from email.utils import parsedate_to_datetime
 from bs4 import BeautifulSoup
 import structlog
 from app.ingestion.base import SourceAdapter, RawContent

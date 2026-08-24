@@ -1,10 +1,16 @@
+from __future__ import annotations
+
 import uuid
-from sqlalchemy import String, Boolean, Integer, Text, ForeignKey, JSON
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.dialects.postgresql import UUID as PG_UUID
-from sqlalchemy import types
-from app.core.database import Base
 import enum
+from typing import TYPE_CHECKING
+from sqlalchemy import String, Boolean, Integer, ForeignKey, JSON, types
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from app.core.database import Base
+
+if TYPE_CHECKING:
+    from app.models.briefing import UserBriefing
+    from app.models.article import SavedArticle
+    from app.models.learning import LearningProgress
 
 
 # Cross-database UUID type

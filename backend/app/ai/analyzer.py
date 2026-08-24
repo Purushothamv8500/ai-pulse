@@ -9,7 +9,7 @@ def get_ai_provider() -> AIProvider:
     if settings.AI_PROVIDER == "anthropic" and settings.ANTHROPIC_API_KEY:
         from app.ai.anthropic_provider import AnthropicProvider
         return AnthropicProvider(api_key=settings.ANTHROPIC_API_KEY)
-    raise ValueError(f"No valid AI provider configured. Set AI_PROVIDER and corresponding API key.")
+    raise ValueError("No valid AI provider configured. Set AI_PROVIDER and corresponding API key.")
 
 
 class AIAnalyzer:

@@ -100,7 +100,7 @@ async def get_dashboard_stats(
 
     # Active sources count
     sources_result = await db.execute(
-        select(func.count()).select_from(Source).where(Source.is_active == True)
+        select(func.count()).select_from(Source).where(Source.is_active)
     )
     active_sources = sources_result.scalar() or 0
 

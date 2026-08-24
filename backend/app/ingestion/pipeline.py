@@ -18,7 +18,7 @@ class IngestionPipeline:
 
     async def run_all_sources(self, db: AsyncSession) -> dict:
         result = await db.execute(
-            select(Source).where(Source.is_active == True)
+            select(Source).where(Source.is_active)
         )
         sources = result.scalars().all()
 

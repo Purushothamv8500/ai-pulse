@@ -7,7 +7,6 @@ from app.core.database import get_db
 from app.api.deps import get_current_user, get_admin_user
 from app.models.user import User
 from app.models.briefing import Briefing, BriefingItem
-from app.models.article import Article
 from app.schemas.briefing import BriefingResponse, BriefingListResponse
 
 router = APIRouter(prefix="/briefings", tags=["briefings"])
@@ -32,7 +31,7 @@ async def get_today_briefing(
     today = date.today()
     result = await db.execute(
         select(Briefing)
-        .where(Briefing.date == today, Briefing.is_published == True)
+        .where(Briefing.date == today, Briefing.is_published)
         .options(selectinload(Briefing.items).selectinload(BriefingItem.article))
     )
     briefing = result.scalar_one_or_none()
@@ -51,7 +50,7 @@ async def list_briefings(
     offset = (page - 1) * page_size
     result = await db.execute(
         select(Briefing)
-        .where(Briefing.is_published == True)
+        .where(Briefing.is_published)
         .order_by(desc(Briefing.date))
         .offset(offset)
         .limit(page_size)
@@ -60,7 +59,7 @@ async def list_briefings(
     briefings = list(result.scalars().all())
 
     count_result = await db.execute(
-        select(Briefing).where(Briefing.is_published == True)
+        select(Briefing).where(Briefing.is_published)
     )
     total = len(count_result.scalars().all())
 
