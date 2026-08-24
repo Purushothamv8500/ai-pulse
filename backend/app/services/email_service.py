@@ -50,13 +50,15 @@ class EmailService:
             msg["From"] = f"{settings.SMTP_FROM_NAME} <{settings.SMTP_FROM_EMAIL}>"
             msg["To"] = f"{to_name} <{to_email}>"
             msg.attach(MIMEText(html, "html"))
+            use_ssl = settings.SMTP_PORT == 465
             await aiosmtplib.send(
                 msg,
                 hostname=settings.SMTP_HOST,
                 port=settings.SMTP_PORT,
                 username=settings.SMTP_USERNAME,
                 password=settings.SMTP_PASSWORD,
-                start_tls=True,
+                use_tls=use_ssl,
+                start_tls=not use_ssl,
                 timeout=SMTP_TIMEOUT,
             )
             logger.info("email_sent_smtp", to=to_email, subject=subject)
