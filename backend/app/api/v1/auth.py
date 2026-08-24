@@ -34,6 +34,7 @@ async def register(
         hashed_password=hash_password(payload.password),
         full_name=payload.full_name,
         is_verified=True,
+        onboarding_complete=True,
     )
     db.add(user)
     await db.flush()
@@ -220,6 +221,7 @@ async def supabase_auth(
             hashed_password="",
             full_name=full_name,
             is_verified=True,
+            onboarding_complete=True,
         )
         db.add(user)
         await db.flush()
