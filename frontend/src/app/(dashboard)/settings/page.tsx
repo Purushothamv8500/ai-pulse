@@ -61,6 +61,7 @@ export default function SettingsPage() {
     interests: [] as string[],
     reading_time: "15",
     delivery_hour: 7,
+    delivery_minute: 0,
     email_enabled: true,
     timezone: "UTC",
   });
@@ -76,11 +77,19 @@ export default function SettingsPage() {
         interests: prefs.interests || [],
         reading_time: prefs.reading_time || "15",
         delivery_hour: prefs.delivery_hour ?? 7,
+        delivery_minute: prefs.delivery_minute ?? 0,
         email_enabled: prefs.email_enabled ?? true,
         timezone: prefs.timezone || "UTC",
       });
     }
   }, [prefs]);
+
+  const formatDeliveryTime = (hour: number, minute: number) => {
+    const period = hour >= 12 ? "PM" : "AM";
+    const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+    const displayMinute = minute.toString().padStart(2, "0");
+    return `${displayHour}:${displayMinute} ${period}`;
+  };
 
   const profileMutation = useMutation({
     mutationFn: (data: { full_name: string }) => userApi.updateMe(data),
@@ -261,35 +270,55 @@ export default function SettingsPage() {
           </div>
         </Section>
 
-        {/* Delivery */}
-        <Section title="Email delivery">
+        {/* Notification Schedule */}
+        <Section title="Notification schedule">
           <div className="space-y-5">
+            {/* Toggle */}
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-semibold text-[#111110]">Daily email briefing</p>
-                <p className="text-xs text-[#A8A29E] mt-0.5">Receive your briefing in your inbox</p>
+                <p className="text-xs text-[#A8A29E] mt-0.5">Receive your AI briefing in your inbox each day</p>
               </div>
               <button
                 onClick={() => setPrefsForm((p) => ({ ...p, email_enabled: !p.email_enabled }))}
                 className={`w-11 h-6 rounded-full transition-colors relative shrink-0 ${prefsForm.email_enabled ? "bg-[#1649FF]" : "bg-[#E7E5E0]"}`}
               >
-                <div className={`w-4.5 h-4.5 bg-white rounded-full absolute top-0.5 transition-transform shadow ${prefsForm.email_enabled ? "translate-x-5" : "translate-x-0.5"}`} style={{width:'18px',height:'18px'}} />
+                <div
+                  className={`bg-white rounded-full absolute top-0.5 transition-transform shadow`}
+                  style={{ width: 18, height: 18, transform: prefsForm.email_enabled ? "translateX(20px)" : "translateX(2px)" }}
+                />
               </button>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            {/* Time picker */}
+            <div className={`space-y-4 transition-opacity ${prefsForm.email_enabled ? "opacity-100" : "opacity-40 pointer-events-none"}`}>
               <div>
-                <label className="block text-xs font-semibold text-[#57534E] mb-1.5">Delivery hour</label>
-                <select
-                  value={prefsForm.delivery_hour}
-                  onChange={(e) => setPrefsForm((p) => ({ ...p, delivery_hour: Number(e.target.value) }))}
-                  className="w-full px-3 py-2.5 border border-[#E7E5E0] rounded-md text-sm text-[#111110] focus:outline-none focus:border-[#1649FF] bg-white"
-                >
-                  {Array.from({ length: 24 }, (_, i) => (
-                    <option key={i} value={i}>{i.toString().padStart(2, "0")}:00</option>
-                  ))}
-                </select>
+                <label className="block text-xs font-semibold text-[#57534E] mb-1.5">Delivery time</label>
+                <div className="flex gap-2">
+                  <select
+                    value={prefsForm.delivery_hour}
+                    onChange={(e) => setPrefsForm((p) => ({ ...p, delivery_hour: Number(e.target.value) }))}
+                    className="flex-1 px-3 py-2.5 border border-[#E7E5E0] rounded-md text-sm text-[#111110] focus:outline-none focus:border-[#1649FF] bg-white"
+                  >
+                    {Array.from({ length: 24 }, (_, i) => {
+                      const period = i >= 12 ? "PM" : "AM";
+                      const label = i === 0 ? "12 AM" : i === 12 ? "12 PM" : i > 12 ? `${i - 12} PM` : `${i} AM`;
+                      return <option key={i} value={i}>{label}</option>;
+                    })}
+                  </select>
+                  <select
+                    value={prefsForm.delivery_minute}
+                    onChange={(e) => setPrefsForm((p) => ({ ...p, delivery_minute: Number(e.target.value) }))}
+                    className="w-24 px-3 py-2.5 border border-[#E7E5E0] rounded-md text-sm text-[#111110] focus:outline-none focus:border-[#1649FF] bg-white"
+                  >
+                    <option value={0}>:00</option>
+                    <option value={15}>:15</option>
+                    <option value={30}>:30</option>
+                    <option value={45}>:45</option>
+                  </select>
+                </div>
               </div>
+
               <div>
                 <label className="block text-xs font-semibold text-[#57534E] mb-1.5">Timezone</label>
                 <select
@@ -302,8 +331,19 @@ export default function SettingsPage() {
                   ))}
                 </select>
               </div>
+
+              {/* Live preview */}
+              <div className="flex items-center gap-3 bg-[#EFF3FF] border border-[#C7D7FE] rounded-md px-4 py-3">
+                <svg className="w-4 h-4 text-[#1649FF] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <p className="text-xs text-[#1649FF]">
+                  Your briefing will arrive at <span className="font-bold">{formatDeliveryTime(prefsForm.delivery_hour, prefsForm.delivery_minute)}</span> · <span className="font-medium">{prefsForm.timezone}</span>
+                </p>
+              </div>
             </div>
 
+            {/* Reading time */}
             <div>
               <label className="block text-xs font-semibold text-[#57534E] mb-1.5">Reading time preference</label>
               <div className="flex gap-2">
