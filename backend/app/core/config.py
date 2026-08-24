@@ -32,11 +32,14 @@ class Settings(BaseSettings):
     AI_MODEL_CHEAP: str = "claude-haiku-4-5-20251001"
     AI_MODEL_QUALITY: str = "claude-sonnet-4-6"
 
+    # Email — set RESEND_API_KEY for reliable delivery (recommended for cloud deployments)
+    # Alternatively configure SMTP_USERNAME + SMTP_PASSWORD for Gmail/other SMTP
+    RESEND_API_KEY: str = ""
     SMTP_HOST: str = "smtp.gmail.com"
     SMTP_PORT: int = 587
     SMTP_USERNAME: str = ""
     SMTP_PASSWORD: str = ""
-    SMTP_FROM_EMAIL: str = "noreply@aipulse.ai"
+    SMTP_FROM_EMAIL: str = "onboarding@resend.dev"
     SMTP_FROM_NAME: str = "AI Pulse"
 
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60

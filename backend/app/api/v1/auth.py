@@ -1,7 +1,7 @@
 import secrets
 import httpx
 from urllib.parse import urlencode
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status, Request
 from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -20,7 +20,11 @@ GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo"
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
-async def register(payload: RegisterRequest, db: AsyncSession = Depends(get_db)):
+async def register(
+    payload: RegisterRequest,
+    background_tasks: BackgroundTasks,
+    db: AsyncSession = Depends(get_db),
+):
     existing = await db.execute(select(User).where(User.email == payload.email))
     if existing.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -39,7 +43,10 @@ async def register(payload: RegisterRequest, db: AsyncSession = Depends(get_db))
     await db.flush()
 
     token = create_verification_token(str(user.id), user.email)
-    await email_service.send_verification_email(user.email, user.full_name, token)
+    # Send email in background so the response is returned immediately
+    background_tasks.add_task(
+        email_service.send_verification_email, user.email, user.full_name, token
+    )
 
     return {"message": "verification_email_sent", "email": user.email}
 
@@ -83,17 +90,22 @@ async def verify_email(token: str, db: AsyncSession = Depends(get_db)):
 
 
 @router.post("/forgot-password")
-async def forgot_password(request: Request, db: AsyncSession = Depends(get_db)):
+async def forgot_password(
+    request: Request,
+    background_tasks: BackgroundTasks,
+    db: AsyncSession = Depends(get_db),
+):
     body = await request.json()
     email = body.get("email", "").strip().lower()
 
     result = await db.execute(select(User).where(User.email == email))
     user = result.scalar_one_or_none()
 
-    # Always return success to prevent email enumeration
     if user and user.is_verified:
         token = create_password_reset_token(str(user.id), user.email)
-        await email_service.send_password_reset_email(user.email, user.full_name, token)
+        background_tasks.add_task(
+            email_service.send_password_reset_email, user.email, user.full_name, token
+        )
 
     return {"message": "If that email exists, a reset link has been sent."}
 
@@ -122,19 +134,23 @@ async def reset_password(request: Request, db: AsyncSession = Depends(get_db)):
 
 
 @router.post("/resend-verification")
-async def resend_verification(request: Request, db: AsyncSession = Depends(get_db)):
+async def resend_verification(
+    request: Request,
+    background_tasks: BackgroundTasks,
+    db: AsyncSession = Depends(get_db),
+):
     body = await request.json()
     email = body.get("email", "").strip().lower()
 
     result = await db.execute(select(User).where(User.email == email))
     user = result.scalar_one_or_none()
 
-    if not user or user.is_verified:
-        # Always return success to avoid email enumeration
-        return {"message": "verification_email_sent"}
+    if user and not user.is_verified:
+        token = create_verification_token(str(user.id), user.email)
+        background_tasks.add_task(
+            email_service.send_verification_email, user.email, user.full_name, token
+        )
 
-    token = create_verification_token(str(user.id), user.email)
-    await email_service.send_verification_email(user.email, user.full_name, token)
     return {"message": "verification_email_sent"}
 
 
@@ -154,7 +170,76 @@ async def refresh_token(payload: RefreshRequest, db: AsyncSession = Depends(get_
     return TokenResponse(access_token=access_token, refresh_token=refresh_token_new)
 
 
-# ── Google OAuth ──────────────────────────────────────────────────────────────
+# ── Google OAuth (Supabase-based) ─────────────────────────────────────────────
+
+@router.post("/supabase")
+async def supabase_auth(
+    request: Request,
+    background_tasks: BackgroundTasks,
+    db: AsyncSession = Depends(get_db),
+):
+    """Exchange a verified Supabase access token for AI Pulse JWT tokens."""
+    body = await request.json()
+    supabase_token = body.get("access_token")
+
+    if not supabase_token:
+        raise HTTPException(status_code=400, detail="access_token required")
+
+    supabase_url = settings.SUPABASE_URL
+    if not supabase_url:
+        raise HTTPException(status_code=501, detail="Supabase not configured")
+
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(
+            f"{supabase_url}/auth/v1/user",
+            headers={
+                "Authorization": f"Bearer {supabase_token}",
+                "apikey": settings.SUPABASE_PUBLISHABLE_KEY or "",
+            },
+        )
+
+    if resp.status_code != 200:
+        raise HTTPException(status_code=401, detail="Invalid Supabase token")
+
+    user_data = resp.json()
+    email = user_data.get("email")
+    meta = user_data.get("user_metadata", {})
+    full_name = (
+        meta.get("full_name") or meta.get("name") or (email.split("@")[0] if email else "User")
+    )
+
+    if not email:
+        raise HTTPException(status_code=400, detail="Could not get email from Supabase")
+
+    result = await db.execute(select(User).where(User.email == email))
+    user = result.scalar_one_or_none()
+    is_new_user = user is None
+
+    if is_new_user:
+        user = User(
+            email=email,
+            hashed_password="",
+            full_name=full_name,
+            is_verified=True,
+        )
+        db.add(user)
+        await db.flush()
+        prefs = UserPreferences(user_id=user.id)
+        db.add(prefs)
+        await db.flush()
+        # Send welcome email for new Google OAuth signups in the background
+        background_tasks.add_task(email_service.send_welcome_email, user.email, user.full_name)
+
+    access_token = create_access_token(str(user.id))
+    refresh_token_val = create_refresh_token(str(user.id))
+    return {
+        "access_token": access_token,
+        "refresh_token": refresh_token_val,
+        "onboarding_complete": user.onboarding_complete,
+    }
+
+
+# ── Legacy backend Google OAuth (kept for compatibility) ──────────────────────
 
 @router.get("/google")
 async def google_login():
@@ -174,71 +259,11 @@ async def google_login():
     return RedirectResponse(url=url)
 
 
-@router.post("/supabase")
-async def supabase_auth(request: Request, db: AsyncSession = Depends(get_db)):
-    """Exchange a verified Supabase access token for AI Pulse JWT tokens."""
-    body = await request.json()
-    supabase_token = body.get("access_token")
-
-    if not supabase_token:
-        raise HTTPException(status_code=400, detail="access_token required")
-
-    supabase_url = settings.SUPABASE_URL
-    if not supabase_url:
-        raise HTTPException(status_code=501, detail="Supabase not configured")
-
-    # Verify token directly with Supabase
-    async with httpx.AsyncClient() as client:
-        resp = await client.get(
-            f"{supabase_url}/auth/v1/user",
-            headers={
-                "Authorization": f"Bearer {supabase_token}",
-                "apikey": settings.SUPABASE_PUBLISHABLE_KEY or "",
-            },
-        )
-
-    if resp.status_code != 200:
-        raise HTTPException(status_code=401, detail="Invalid Supabase token")
-
-    user_data = resp.json()
-    email = user_data.get("email")
-    meta = user_data.get("user_metadata", {})
-    full_name = meta.get("full_name") or meta.get("name") or (email.split("@")[0] if email else "User")
-
-    if not email:
-        raise HTTPException(status_code=400, detail="Could not get email from Supabase")
-
-    result = await db.execute(select(User).where(User.email == email))
-    user = result.scalar_one_or_none()
-
-    if not user:
-        user = User(
-            email=email,
-            hashed_password="",
-            full_name=full_name,
-            is_verified=True,
-        )
-        db.add(user)
-        await db.flush()
-        prefs = UserPreferences(user_id=user.id)
-        db.add(prefs)
-        await db.flush()
-
-    access_token = create_access_token(str(user.id))
-    refresh_token_val = create_refresh_token(str(user.id))
-    return {
-        "access_token": access_token,
-        "refresh_token": refresh_token_val,
-        "onboarding_complete": user.onboarding_complete,
-    }
-
-
 @router.get("/google/callback")
 async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
     if not settings.GOOGLE_CLIENT_ID or not settings.GOOGLE_CLIENT_SECRET:
         raise HTTPException(status_code=501, detail="Google OAuth not configured")
 
-    # Exchange authorization code for tokens
     async with httpx.AsyncClient() as client:
         token_response = await client.post(
             GOOGLE_TOKEN_URL,
@@ -257,7 +282,6 @@ async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
     token_data = token_response.json()
     google_access_token = token_data.get("access_token")
 
-    # Fetch user info from Google
     async with httpx.AsyncClient() as client:
         userinfo_response = await client.get(
             GOOGLE_USERINFO_URL,
@@ -274,29 +298,25 @@ async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
     if not email:
         raise HTTPException(status_code=400, detail="Could not get email from Google")
 
-    # Find or create user
     result = await db.execute(select(User).where(User.email == email))
     user = result.scalar_one_or_none()
 
     if not user:
         user = User(
             email=email,
-            hashed_password="",  # no password for OAuth users
+            hashed_password="",
             full_name=full_name,
             is_verified=True,
         )
         db.add(user)
         await db.flush()
-
         prefs = UserPreferences(user_id=user.id)
         db.add(prefs)
         await db.flush()
 
-    # Create JWT tokens
     access_token = create_access_token(str(user.id))
     refresh_token = create_refresh_token(str(user.id))
 
-    # Redirect to frontend callback page with tokens
     redirect_url = (
         f"{settings.FRONTEND_URL}/auth/callback"
         f"?access_token={access_token}"
