@@ -46,14 +46,26 @@ export default function AuthCallbackPage() {
           console.error(
             "[auth/callback] exchangeCodeForSession failed:",
             exchangeError.message,
-            "| status:", exchangeError.status
+            "| status:", exchangeError.status,
+            "| name:", exchangeError.name
           );
-          setError("Authentication failed. Please try again.");
+          const isVerifierMissing = exchangeError.message?.toLowerCase().includes("pkce") ||
+            exchangeError.message?.toLowerCase().includes("verifier");
+          const isCodeExpired = exchangeError.status === 400 &&
+            (exchangeError.message?.toLowerCase().includes("expired") ||
+             exchangeError.message?.toLowerCase().includes("invalid grant"));
+          if (isVerifierMissing) {
+            setError(`Sign-in error: PKCE verifier missing (${exchangeError.message}). Clear browser cookies and try again.`);
+          } else if (isCodeExpired) {
+            setError("Sign-in link expired. Please click 'Continue with Google' again.");
+          } else {
+            setError(`Authentication error: ${exchangeError.message ?? "unknown"} (${exchangeError.status ?? "no status"})`);
+          }
           return;
         }
         if (!data.session) {
           console.error("[auth/callback] exchangeCodeForSession: no session in response");
-          setError("Authentication failed. Please try again.");
+          setError("Authentication failed — no session returned. Please try again.");
           return;
         }
         session = data.session;
