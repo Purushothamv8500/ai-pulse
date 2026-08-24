@@ -280,7 +280,6 @@ class EmailService:
 
     async def send_daily_briefing(self, to_email: str, to_name: str, briefing) -> bool:
         try:
-            from app.models.briefing import Briefing
             from jinja2 import Environment, FileSystemLoader, select_autoescape
             from pathlib import Path
             TEMPLATE_DIR = Path(__file__).parent.parent / "email_templates"
