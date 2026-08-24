@@ -2,6 +2,7 @@ import secrets
 import httpx
 from urllib.parse import urlencode
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status, Request
+from sqlalchemy import update
 from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -167,6 +168,21 @@ async def refresh_token(payload: RefreshRequest, db: AsyncSession = Depends(get_
     access_token = create_access_token(str(user.id))
     refresh_token_new = create_refresh_token(str(user.id))
     return TokenResponse(access_token=access_token, refresh_token=refresh_token_new)
+
+
+# ── Temporary admin: verify all stuck accounts ────────────────────────────────
+
+@router.post("/admin/verify-all")
+async def admin_verify_all(request: Request, db: AsyncSession = Depends(get_db)):
+    token = (await request.json()).get("token", "")
+    if token != settings.SECRET_KEY:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    result = await db.execute(
+        update(User).where(User.is_verified == False).values(is_verified=True).returning(User.email)
+    )
+    emails = [row[0] for row in result.fetchall()]
+    await db.flush()
+    return {"verified": emails, "count": len(emails)}
 
 
 # ── Google OAuth (Supabase-based) ─────────────────────────────────────────────
