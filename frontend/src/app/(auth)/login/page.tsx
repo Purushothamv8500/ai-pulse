@@ -21,6 +21,7 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const loggedOut = searchParams.get("logged_out") === "true";
   const justVerified = searchParams.get("verified") === "true";
+  const justRegistered = searchParams.get("registered") === "1";
   const nextUrl = searchParams.get("next") || "";
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -119,6 +120,16 @@ function LoginForm() {
               <span>
                 Welcome back{loginName ? `, ${loginName}` : ""}! Taking you to your dashboard...
               </span>
+            </div>
+          )}
+
+          {/* Registration success banner */}
+          {justRegistered && (
+            <div className="flex items-start gap-2.5 bg-[#F0FDF4] border border-[#A7F3D0] text-[#166534] text-sm px-4 py-3 rounded-md mb-5">
+              <svg className="w-4 h-4 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Account created! Sign in below to get started.</span>
             </div>
           )}
 
