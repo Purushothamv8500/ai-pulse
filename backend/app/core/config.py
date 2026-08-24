@@ -35,6 +35,7 @@ class Settings(BaseSettings):
     # Email — set RESEND_API_KEY for reliable delivery (recommended for cloud deployments)
     # Alternatively configure SMTP_USERNAME + SMTP_PASSWORD for Gmail/other SMTP
     RESEND_API_KEY: str = ""
+    BREVO_API_KEY: str = ""
     SMTP_HOST: str = "smtp.gmail.com"
     SMTP_PORT: int = 587
     SMTP_USERNAME: str = ""

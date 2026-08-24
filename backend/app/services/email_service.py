@@ -36,6 +36,29 @@ class EmailService:
             logger.error("resend_send_failed", to=to_email, error=str(exc))
             return False
 
+    async def _send_via_brevo(self, to_email: str, to_name: str, subject: str, html: str) -> bool:
+        """Send via Brevo REST API (HTTPS/443 — works on all cloud providers)."""
+        try:
+            async with httpx.AsyncClient(timeout=30.0) as client:
+                resp = await client.post(
+                    "https://api.brevo.com/v3/smtp/email",
+                    headers={"api-key": settings.BREVO_API_KEY, "Content-Type": "application/json"},
+                    json={
+                        "sender": {"name": settings.SMTP_FROM_NAME, "email": settings.SMTP_FROM_EMAIL},
+                        "to": [{"email": to_email, "name": to_name}],
+                        "subject": subject,
+                        "htmlContent": html,
+                    },
+                )
+            if resp.status_code in (200, 201):
+                logger.info("email_sent_brevo", to=to_email, subject=subject)
+                return True
+            logger.error("brevo_api_error", status=resp.status_code, body=resp.text[:300])
+            return False
+        except Exception as exc:
+            logger.error("brevo_send_failed", to=to_email, error=str(exc))
+            return False
+
     async def _send_via_smtp(self, to_email: str, to_name: str, subject: str, html: str) -> bool:
         """Send via SMTP (requires SMTP_USERNAME and SMTP_PASSWORD to be set)."""
         if not settings.SMTP_USERNAME or not settings.SMTP_PASSWORD:
@@ -68,6 +91,11 @@ class EmailService:
             return False
 
     async def _send(self, to_email: str, to_name: str, subject: str, html: str) -> bool:
+        if settings.BREVO_API_KEY:
+            ok = await self._send_via_brevo(to_email, to_name, subject, html)
+            if ok:
+                return True
+            logger.warning("brevo_failed_falling_back")
         if settings.RESEND_API_KEY:
             ok = await self._send_via_resend(to_email, to_name, subject, html)
             if ok:
