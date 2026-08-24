@@ -22,7 +22,7 @@ export default function LearningPage() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["learning-progress"] }),
   });
 
-  const progressMap = new Map(
+  const progressMap = new Map<string, { status: string }>(
     (progress || []).map((p: any) => [p.topic_id, p])
   );
 

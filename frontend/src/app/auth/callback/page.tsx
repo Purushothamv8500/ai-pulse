@@ -29,6 +29,7 @@ export default function AuthCallbackPage() {
         setTokens({
           access_token: res.data.access_token,
           refresh_token: res.data.refresh_token,
+          token_type: res.data.token_type ?? "bearer",
         });
 
         router.push(res.data.onboarding_complete ? "/dashboard" : "/onboarding");
