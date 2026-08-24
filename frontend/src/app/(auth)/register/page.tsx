@@ -17,8 +17,6 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
 export default function RegisterPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -69,7 +67,7 @@ export default function RegisterPage() {
             Didn't receive it?{" "}
             <button
               onClick={async () => {
-                await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/resend-verification`, {
+                await fetch(`/api/v1/auth/resend-verification`, {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({ email: registeredEmail }),

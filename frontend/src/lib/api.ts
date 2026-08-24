@@ -1,10 +1,8 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
 export const api = axios.create({
-  baseURL: `${API_BASE}/api/v1`,
+  baseURL: `/api/v1`,
   headers: { "Content-Type": "application/json" },
 });
 
@@ -23,7 +21,7 @@ api.interceptors.response.use(
       const refreshToken = Cookies.get("refresh_token");
       if (refreshToken) {
         try {
-          const res = await axios.post(`${API_BASE}/api/v1/auth/refresh`, {
+          const res = await axios.post(`/api/v1/auth/refresh`, {
             refresh_token: refreshToken,
           });
           const { access_token, refresh_token } = res.data;

@@ -16,8 +16,6 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -157,7 +155,7 @@ function LoginForm() {
               ) : (
                 <button
                   onClick={async () => {
-                    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/resend-verification`, {
+                    await fetch(`/api/v1/auth/resend-verification`, {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
                       body: JSON.stringify({ email: unverifiedEmail }),

@@ -4,9 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { setTokens } from "@/lib/auth";
-import axios from "axios";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+import { api } from "@/lib/api";
 
 export default function AuthCallbackPage() {
   const router = useRouter();
@@ -22,7 +20,7 @@ export default function AuthCallbackPage() {
           return;
         }
 
-        const res = await axios.post(`${API_URL}/api/v1/auth/supabase`, {
+        const res = await api.post(`/auth/supabase`, {
           access_token: session.access_token,
         });
 

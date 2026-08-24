@@ -4,8 +4,6 @@ import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
 type State = "loading" | "success" | "already_verified" | "error";
 
 function VerifyEmailContent() {
@@ -22,7 +20,7 @@ function VerifyEmailContent() {
 
     const verify = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/v1/auth/verify-email?token=${encodeURIComponent(token)}`);
+        const res = await fetch(`/api/v1/auth/verify-email?token=${encodeURIComponent(token)}`);
         const data = await res.json();
 
         if (!res.ok) {
