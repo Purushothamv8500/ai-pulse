@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { learningApi } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import type { LearningProgressEntry } from "@/types";
 
 export default function LearningPage() {
   const queryClient = useQueryClient();
@@ -22,8 +23,9 @@ export default function LearningPage() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["learning-progress"] }),
   });
 
-  const progressMap = new Map<string, { status: string }>(
-    (progress || []).map((p: any) => [p.topic_id, p])
+  const progressEntries = (progress as LearningProgressEntry[] | undefined) ?? [];
+  const progressMap = new Map<string, LearningProgressEntry>(
+    progressEntries.map((p) => [p.topic_id, p])
   );
 
   return (
@@ -33,17 +35,17 @@ export default function LearningPage() {
         <p className="text-gray-600 mt-1">Topics recommended from your AI briefings</p>
       </div>
 
-      {progress && progress.length > 0 && (
+      {progressEntries.length > 0 && (
         <div className="bg-white rounded-xl border border-gray-100 p-6 mb-8">
           <h2 className="font-semibold text-gray-900 mb-4">Your Progress</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-pulse-600">{progress.length}</div>
+              <div className="text-2xl font-bold text-pulse-600">{progressEntries.length}</div>
               <div className="text-xs text-gray-500">Started</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-green-600">
-                {progress.filter((p: any) => p.status === "completed").length}
+                {progressEntries.filter((p) => p.status === "completed").length}
               </div>
               <div className="text-xs text-gray-500">Completed</div>
             </div>

@@ -75,3 +75,9 @@ export interface TokenResponse {
   refresh_token: string;
   token_type: string;
 }
+
+export interface LearningProgressEntry {
+  topic_id: string;
+  status: "started" | "completed";
+  progress_percent: number;
+}
