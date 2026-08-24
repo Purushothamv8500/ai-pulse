@@ -33,7 +33,7 @@ async def register(
         email=payload.email,
         hashed_password=hash_password(payload.password),
         full_name=payload.full_name,
-        is_verified=False,
+        is_verified=True,
     )
     db.add(user)
     await db.flush()
@@ -62,8 +62,7 @@ async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)):
     if not user.is_active:
         raise HTTPException(status_code=403, detail="Account inactive")
 
-    if not user.is_verified:
-        raise HTTPException(status_code=403, detail="email_not_verified")
+    # Email verification temporarily disabled — users auto-verified on registration
 
     access_token = create_access_token(str(user.id))
     refresh_token = create_refresh_token(str(user.id))
